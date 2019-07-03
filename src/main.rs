@@ -26,7 +26,7 @@ impl ZigZag {
         }
     }
 
-    fn can_move_s(&self, row: usize, col: usize) -> bool {
+    fn can_move_s(&self, row: usize) -> bool {
         if row >= self.rows - 1 {
             false
         } else {
@@ -34,7 +34,7 @@ impl ZigZag {
         }
     }
 
-    fn can_move_e(&self, row: usize, col: usize) -> bool {
+    fn can_move_e(&self, col: usize) -> bool {
         if col >= self.cols - 1 {
             return false;
         } else {
@@ -50,11 +50,11 @@ impl ZigZag {
         }
     }
 
-    fn move_e(row: &mut usize, col: &mut usize) {
+    fn move_e(col: &mut usize) {
         *col += 1;
     }
 
-    fn move_s(row: &mut usize, col: &mut usize) {
+    fn move_s(row: &mut usize) {
         *row += 1;
     }
 
@@ -87,11 +87,9 @@ impl ZigZag {
     fn zig_zag(&self) {
         let mut row = 0;
         let mut col = 0;
-        let array = self.array.borrow_mut()[row][col];
-        let mut next_move = (0, 0);
         while !self.done(row, col) {
-            if !self.can_move_ne(row, col) && self.can_move_e(row, col) {
-                ZigZag::move_e(&mut row, &mut col);
+            if !self.can_move_ne(row, col) && self.can_move_e(col) {
+                ZigZag::move_e(&mut col);
                 self.fill_value(row, col);
                 while self.can_move_sw(row, col) {
                     ZigZag::move_sw(&mut row, &mut col);
@@ -99,9 +97,9 @@ impl ZigZag {
                 }
             }
 
-            if !self.can_move_sw(row, col) && self.can_move_s(row, col)
-                && self.can_move_ne(row, col) && self.can_move_e(row, col) {
-                ZigZag::move_s(&mut row, &mut col);
+            if !self.can_move_sw(row, col) && self.can_move_s(row)
+                && self.can_move_ne(row, col) && self.can_move_e( col) {
+                ZigZag::move_s(&mut row);
                 self.fill_value(row, col);
                 while self.can_move_ne(row, col) {
                     ZigZag::move_ne(&mut row, &mut col);
@@ -109,18 +107,18 @@ impl ZigZag {
                 }
             }
 
-            if self.can_move_sw(row, col) && self.can_move_s(row, col)
-                && !self.can_move_ne(row, col) && !self.can_move_e(row, col) {
-                ZigZag::move_e(&mut row, &mut col);
+            if self.can_move_sw(row, col) && self.can_move_s(row)
+                && !self.can_move_ne(row, col) && !self.can_move_e(col) {
+                ZigZag::move_e(&mut col);
                 while self.can_move_sw(row, col) {
                     ZigZag::move_sw(&mut row, &mut col);
                     self.fill_value(row, col);
                 }
             }
 
-            if !self.can_move_sw(row, col) && !self.can_move_s(row, col)
-                && self.can_move_ne(row, col) && self.can_move_e(row, col) {
-                ZigZag::move_e(&mut row, &mut col);
+            if !self.can_move_sw(row, col) && !self.can_move_s(row)
+                && self.can_move_ne(row, col) && self.can_move_e( col) {
+                ZigZag::move_e( &mut col);
                 self.fill_value(row, col);
                 while self.can_move_ne(row, col) {
                     ZigZag::move_ne(&mut row, &mut col);
